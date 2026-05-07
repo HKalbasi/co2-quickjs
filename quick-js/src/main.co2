@@ -3,6 +3,11 @@ use quickjs_h::*;
 use quickjs_libc::*;
 use qjsc_generated::*;
 use libc::*;
+use std::env::Args;
+use std::iter::Iterator;
+use std::string::String;
+use std::vec::Vec;
+use std::option::Option;
 
 mod dtoa;
 mod libregexp;
@@ -400,7 +405,7 @@ void help(void)
     exit(1);
 }
 
-int main(int argc, char **argv)
+int qjs_main(int argc, char **argv)
 {
     JSRuntime *rt;
     JSContext *ctx;
@@ -750,4 +755,44 @@ start:
     JS_FreeContext(ctx);
     JS_FreeRuntime(rt);
     return 1;
+}
+
+#define MAX_FN_ARGS 4096
+usize g_fn_args[MAX_FN_ARGS];
+usize g_arg_count;
+
+usize store_arg(u8* data, usize len) {
+    char *cstr = malloc(len + 1);
+    memcpy(cstr, data, len);
+    cstr[len] = 0;
+    return (usize)cstr;
+}
+
+int run_with_globals(void) {
+    int argc = (int)g_arg_count;
+    char **argv = malloc((argc + 1) * sizeof(char*));
+
+    for (int i = 0; i < argc; i++) {
+        argv[i] = (char*)g_fn_args[i];
+    }
+    argv[argc] = std::ptr::null_mut::<()>();
+
+    return qjs_main(argc, argv);
+}
+
+fn main() {
+    usize argc = 0;
+    Args iter = std::env::args();
+    while (true) {
+        Option<String> opt = iter.next();
+        if (opt.is_none()) break;
+        String s = opt.unwrap();
+        Vec<u8> bytes = s.into_bytes();
+        g_fn_args[argc] = store_arg(bytes.as_mut_ptr(), bytes.len());
+        argc++;
+    }
+    g_arg_count = argc;
+    g_fn_args[argc] = 0;
+
+    std::process::exit(run_with_globals());
 }
