@@ -12,6 +12,7 @@ use std::option::Option;
 mod dtoa;
 mod libregexp;
 mod libunicode;
+mod list;
 mod qjsc_generated;
 mod quickjs;
 mod quickjs_h;

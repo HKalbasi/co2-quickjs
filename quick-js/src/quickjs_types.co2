@@ -8,6 +8,8 @@
 
 use libc::{malloc, free, realloc, calloc, abort, exit, printf, fprintf, snprintf, vsnprintf, memcpy, memmove, memset, strlen, strcmp, strchr, strrchr, strstr, strtod, size_t, intptr_t, uint8_t, uint16_t, uint32_t, uint64_t, FILE, stdout, int32_t};
 
+typedef list::list_head list_head;
+
 #if !defined(_MSC_VER)
 #include <sys/time.h>
 #if defined(_WIN32)

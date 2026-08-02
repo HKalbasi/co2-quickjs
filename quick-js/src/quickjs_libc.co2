@@ -10,6 +10,8 @@ use libc::{
 use quickjs::*;
 use quickjs_h::*;
 
+typedef list::list_head list_head;
+
 /* Include quickjs.h for type definitions.
    This will cause `clashing_extern_declarations` warnings since quickjs.h
    is also included in quickjs.co2, but that's okay for now. */

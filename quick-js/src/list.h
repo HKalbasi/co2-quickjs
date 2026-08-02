@@ -32,11 +32,6 @@
 extern "C" {
 #endif
 
-struct list_head {
-    struct list_head *prev;
-    struct list_head *next;
-};
-
 #define LIST_HEAD_INIT(el) { &(el), &(el) }
 
 /* return the pointer of type 'type *' containing 'el' as field 'member' */
